@@ -11,6 +11,9 @@ Found a "closer" NOZZLE_TO_PROBE_OFFSET to use as a starter value: https://www.r
 
 Also set the default environment for platform.io: https://www.mironv.com/2020/08/14/ender3v2-bltouch-marlin/
 
+## 1.3
+Updated config version to match marlin version. Both are 2.1.x now
+
 
 # Todo's
   - Probably calibrate NOZZLE_TO_PROBE_OFFSET once FW is flashed using the PROBE_MANUALLY helper in the bed leveling UI
