@@ -21,6 +21,8 @@
  */
 #pragma once
 
+#define CONFIG_EXAMPLES_DIR "Creality/Ender-3 V2/CrealityV422/MarlinUI"
+
 /**
  * Configuration_adv.h
  *
@@ -30,7 +32,7 @@
  *
  * Basic settings can be found in Configuration.h
  */
-#define CONFIGURATION_ADV_H_VERSION 02010100
+#define CONFIGURATION_ADV_H_VERSION 02010000
 
 //===========================================================================
 //============================= Thermal Settings ============================
@@ -286,7 +288,7 @@
    * and/or decrease WATCH_TEMP_INCREASE. WATCH_TEMP_INCREASE should not be set
    * below 2.
    */
-  #define WATCH_TEMP_PERIOD  20               // Seconds
+  #define WATCH_TEMP_PERIOD  40               // Seconds
   #define WATCH_TEMP_INCREASE 2               // Degrees Celsius
 #endif
 
@@ -294,13 +296,13 @@
  * Thermal Protection parameters for the bed are just as above for hotends.
  */
 #if ENABLED(THERMAL_PROTECTION_BED)
-  #define THERMAL_PROTECTION_BED_PERIOD        20 // Seconds
+  #define THERMAL_PROTECTION_BED_PERIOD       180 // Seconds
   #define THERMAL_PROTECTION_BED_HYSTERESIS     2 // Degrees Celsius
 
   /**
    * As described above, except for the bed (M140/M190/M303).
    */
-  #define WATCH_BED_TEMP_PERIOD                60 // Seconds
+  #define WATCH_BED_TEMP_PERIOD               180 // Seconds
   #define WATCH_BED_TEMP_INCREASE               2 // Degrees Celsius
 #endif
 
@@ -536,7 +538,7 @@
  *
  * Define one or both of these to override the default 0-255 range.
  */
-//#define FAN_MIN_PWM 50
+#define FAN_MIN_PWM 50
 //#define FAN_MAX_PWM 128
 
 /**
@@ -839,7 +841,7 @@
 
 //#define HOMING_BACKOFF_POST_MM { 2, 2, 2 }  // (linear=mm, rotational=°) Backoff from endstops after homing
 
-//#define QUICK_HOME                          // If G28 contains XY do a diagonal move first
+#define QUICK_HOME                            // If G28 contains XY do a diagonal move first
 //#define HOME_Y_BEFORE_X                     // If G28 contains XY home Y before X
 //#define HOME_Z_FIRST                        // Home Z first. Requires a Z-MIN endstop (not a probe).
 //#define CODEPENDENT_XY_HOMING               // If X/Y can't home without homing Y/X first
@@ -1186,7 +1188,7 @@
  * vibration and surface artifacts. The algorithm adapts to provide the best possible step smoothing at the
  * lowest stepping frequencies.
  */
-//#define ADAPTIVE_STEP_SMOOTHING
+#define ADAPTIVE_STEP_SMOOTHING
 
 /**
  * Custom Microstepping
@@ -1272,8 +1274,9 @@
 // Change values more rapidly when the encoder is rotated faster
 #define ENCODER_RATE_MULTIPLIER
 #if ENABLED(ENCODER_RATE_MULTIPLIER)
-  #define ENCODER_10X_STEPS_PER_SEC   30  // (steps/s) Encoder rate for 10x speed
-  #define ENCODER_100X_STEPS_PER_SEC  80  // (steps/s) Encoder rate for 100x speed
+  #define ENCODER_5X_STEPS_PER_SEC    30  // (steps/s) Encoder rate for 5x speed
+  #define ENCODER_10X_STEPS_PER_SEC   80  // (steps/s) Encoder rate for 10x speed
+  #define ENCODER_100X_STEPS_PER_SEC 130  // (steps/s) Encoder rate for 100x speed
 #endif
 
 // Play a beep when the feedrate is changed from the Status Screen
@@ -1319,9 +1322,6 @@
       #define XATC_Y_POSITION Y_CENTER      // (mm) Y position to probe
       #define XATC_Z_OFFSETS { 0, 0, 0 }    // Z offsets for X axis sample points
     #endif
-
-    // Show Deploy / Stow Probe options in the Motion menu.
-    #define PROBE_DEPLOY_STOW_MENU
   #endif
 
   // Include a page of printer information in the LCD Main Menu
@@ -1338,7 +1338,7 @@
 
 #endif // HAS_MARLINUI_MENU
 
-#if EITHER(HAS_DISPLAY, DWIN_LCD_PROUI)
+#if ANY(HAS_DISPLAY, DWIN_LCD_PROUI, DWIN_CREALITY_LCD_JYERSUI)
   //#define SOUND_MENU_ITEM   // Add a mute option to the LCD menu
   #define SOUND_ON_DEFAULT    // Buzzer/speaker default enabled state
 #endif
@@ -1476,7 +1476,7 @@
    * an option on the LCD screen to continue the print from the last-known
    * point in the file.
    */
-  //#define POWER_LOSS_RECOVERY
+  #define POWER_LOSS_RECOVERY
   #if ENABLED(POWER_LOSS_RECOVERY)
     #define PLR_ENABLED_DEFAULT   false // Power Loss Recovery enabled by default. (Set with 'M413 Sn' & M500)
     //#define BACKUP_POWER_SUPPLY       // Backup power / UPS to move the steppers on power loss
@@ -1522,17 +1522,17 @@
    *  - SDSORT_CACHE_NAMES will retain the sorted file listing in RAM. (Expensive!)
    *  - SDSORT_DYNAMIC_RAM only uses RAM when the SD menu is visible. (Use with caution!)
    */
-  //#define SDCARD_SORT_ALPHA
+  #define SDCARD_SORT_ALPHA
 
   // SD Card Sorting options
   #if ENABLED(SDCARD_SORT_ALPHA)
     #define SDSORT_LIMIT       40     // Maximum number of sorted items (10-256). Costs 27 bytes each.
     #define FOLDER_SORTING     -1     // -1=above  0=none  1=below
     #define SDSORT_GCODE       false  // Allow turning sorting on/off with LCD and M34 G-code.
-    #define SDSORT_USES_RAM    false  // Pre-allocate a static array for faster pre-sorting.
+    #define SDSORT_USES_RAM    true   // Pre-allocate a static array for faster pre-sorting.
     #define SDSORT_USES_STACK  false  // Prefer the stack for pre-sorting to give back some SRAM. (Negated by next 2 options.)
-    #define SDSORT_CACHE_NAMES false  // Keep sorted items in RAM longer for speedy performance. Most expensive option.
-    #define SDSORT_DYNAMIC_RAM false  // Use dynamic allocation (within SD menus). Least expensive option. Set SDSORT_LIMIT before use!
+    #define SDSORT_CACHE_NAMES true   // Keep sorted items in RAM longer for speedy performance. Most expensive option.
+    #define SDSORT_DYNAMIC_RAM true   // Use dynamic allocation (within SD menus). Least expensive option. Set SDSORT_LIMIT before use!
     #define SDSORT_CACHE_VFATS 2      // Maximum number of 13-byte VFAT entries to use for sorting.
                                       // Note: Only affects SCROLL_LONG_FILENAMES with SDSORT_CACHE_NAMES but not SDSORT_DYNAMIC_RAM.
   #endif
@@ -1544,7 +1544,7 @@
   //#define LONG_FILENAME_HOST_SUPPORT    // Get the long filename of a file/folder with 'M33 <dosname>' and list long filenames with 'M20 L'
   //#define LONG_FILENAME_WRITE_SUPPORT   // Create / delete files with long filenames via M28, M30, and Binary Transfer Protocol
 
-  //#define SCROLL_LONG_FILENAMES         // Scroll long filenames in the SD card menu
+  #define SCROLL_LONG_FILENAMES           // Scroll long filenames in the SD card menu
 
   //#define SD_ABORT_NO_COOLDOWN          // Leave the heaters on after Stop Print (not recommended!)
 
@@ -1663,7 +1663,7 @@
  * By default an onboard SD card reader may be shared as a USB mass-
  * storage device. This option hides the SD card from the host PC.
  */
-//#define NO_SD_HOST_DRIVE   // Disable SD Card access over USB (for security).
+#define NO_SD_HOST_DRIVE   // Disable SD Card access over USB (for security).
 
 /**
  * Additional options for Graphical Displays
@@ -1969,7 +1969,7 @@
  *
  * Warning: Does not respect endstops!
  */
-//#define BABYSTEPPING
+#define BABYSTEPPING
 #if ENABLED(BABYSTEPPING)
   //#define INTEGRATED_BABYSTEPPING         // EXPERIMENTAL integration of babystepping into the Stepper ISR
   //#define BABYSTEP_WITHOUT_HOMING
@@ -1980,7 +1980,7 @@
   #define BABYSTEP_MULTIPLICATOR_Z  1       // (steps or mm) Steps or millimeter distance for each Z babystep
   #define BABYSTEP_MULTIPLICATOR_XY 1       // (steps or mm) Steps or millimeter distance for each XY babystep
 
-  //#define DOUBLECLICK_FOR_Z_BABYSTEPPING  // Double-click on the Status Screen for Z Babystepping.
+  #define DOUBLECLICK_FOR_Z_BABYSTEPPING    // Double-click on the Status Screen for Z Babystepping.
   #if ENABLED(DOUBLECLICK_FOR_Z_BABYSTEPPING)
     #define DOUBLECLICK_MAX_INTERVAL 1250   // Maximum interval between clicks, in milliseconds.
                                             // Note: Extra time may be added to mitigate controller latency.
@@ -2346,7 +2346,7 @@
  * Currently handles M108, M112, M410, M876
  * NOTE: Not yet implemented for all platforms.
  */
-//#define EMERGENCY_PARSER
+#define EMERGENCY_PARSER
 
 /**
  * Realtime Reporting (requires EMERGENCY_PARSER)
@@ -3216,7 +3216,7 @@
    * Beta feature!
    * Create a 50/50 square wave step pulse optimal for stepper drivers.
    */
-  //#define SQUARE_WAVE_STEPPING
+  #define SQUARE_WAVE_STEPPING
 
   /**
    * Enable M122 debugging command for TMC stepper drivers.
@@ -3239,6 +3239,253 @@
 
 #endif // HAS_TRINAMIC_CONFIG
 
+// @section L64XX
+
+/**
+ * L64XX Stepper Driver options
+ *
+ * Arduino-L6470 library (0.8.0 or higher) is required.
+ * https://github.com/ameyer/Arduino-L6470
+ *
+ * Requires the following to be defined in your pins_YOUR_BOARD file
+ *     L6470_CHAIN_SCK_PIN
+ *     L6470_CHAIN_MISO_PIN
+ *     L6470_CHAIN_MOSI_PIN
+ *     L6470_CHAIN_SS_PIN
+ *     ENABLE_RESET_L64XX_CHIPS(Q)  where Q is 1 to enable and 0 to reset
+ */
+
+#if HAS_L64XX
+
+  //#define L6470_CHITCHAT        // Display additional status info
+
+  #if AXIS_IS_L64XX(X)
+    #define X_MICROSTEPS       128  // Number of microsteps (VALID: 1, 2, 4, 8, 16, 32, 128) - L6474 max is 16
+    #define X_OVERCURRENT     2000  // (mA) Current where the driver detects an over current
+                                    //   L6470 & L6474 - VALID: 375 x (1 - 16) - 6A max - rounds down
+                                    //   POWERSTEP01: VALID: 1000 x (1 - 32) - 32A max - rounds down
+    #define X_STALLCURRENT    1500  // (mA) Current where the driver detects a stall (VALID: 31.25 * (1-128) -  4A max - rounds down)
+                                    //   L6470 & L6474 - VALID: 31.25 * (1-128) -  4A max - rounds down
+                                    //   POWERSTEP01: VALID: 200 x (1 - 32) - 6.4A max - rounds down
+                                    //   L6474 - STALLCURRENT setting is used to set the nominal (TVAL) current
+    #define X_MAX_VOLTAGE      127  // 0-255, Maximum effective voltage seen by stepper - not used by L6474
+    #define X_CHAIN_POS         -1  // Position in SPI chain, 0=Not in chain, 1=Nearest MOSI
+    #define X_SLEW_RATE          1  // 0-3, Slew 0 is slowest, 3 is fastest
+  #endif
+
+  #if AXIS_IS_L64XX(X2)
+    #define X2_MICROSTEPS     X_MICROSTEPS
+    #define X2_OVERCURRENT            2000
+    #define X2_STALLCURRENT           1500
+    #define X2_MAX_VOLTAGE             127
+    #define X2_CHAIN_POS                -1
+    #define X2_SLEW_RATE                 1
+  #endif
+
+  #if AXIS_IS_L64XX(Y)
+    #define Y_MICROSTEPS               128
+    #define Y_OVERCURRENT             2000
+    #define Y_STALLCURRENT            1500
+    #define Y_MAX_VOLTAGE              127
+    #define Y_CHAIN_POS                 -1
+    #define Y_SLEW_RATE                  1
+  #endif
+
+  #if AXIS_IS_L64XX(Y2)
+    #define Y2_MICROSTEPS     Y_MICROSTEPS
+    #define Y2_OVERCURRENT            2000
+    #define Y2_STALLCURRENT           1500
+    #define Y2_MAX_VOLTAGE             127
+    #define Y2_CHAIN_POS                -1
+    #define Y2_SLEW_RATE                 1
+  #endif
+
+  #if AXIS_IS_L64XX(Z)
+    #define Z_MICROSTEPS               128
+    #define Z_OVERCURRENT             2000
+    #define Z_STALLCURRENT            1500
+    #define Z_MAX_VOLTAGE              127
+    #define Z_CHAIN_POS                 -1
+    #define Z_SLEW_RATE                  1
+  #endif
+
+  #if AXIS_IS_L64XX(Z2)
+    #define Z2_MICROSTEPS     Z_MICROSTEPS
+    #define Z2_OVERCURRENT            2000
+    #define Z2_STALLCURRENT           1500
+    #define Z2_MAX_VOLTAGE             127
+    #define Z2_CHAIN_POS                -1
+    #define Z2_SLEW_RATE                 1
+  #endif
+
+  #if AXIS_IS_L64XX(Z3)
+    #define Z3_MICROSTEPS     Z_MICROSTEPS
+    #define Z3_OVERCURRENT            2000
+    #define Z3_STALLCURRENT           1500
+    #define Z3_MAX_VOLTAGE             127
+    #define Z3_CHAIN_POS                -1
+    #define Z3_SLEW_RATE                 1
+  #endif
+
+  #if AXIS_IS_L64XX(Z4)
+    #define Z4_MICROSTEPS     Z_MICROSTEPS
+    #define Z4_OVERCURRENT            2000
+    #define Z4_STALLCURRENT           1500
+    #define Z4_MAX_VOLTAGE             127
+    #define Z4_CHAIN_POS                -1
+    #define Z4_SLEW_RATE                 1
+  #endif
+
+  #if AXIS_IS_L64XX(I)
+    #define I_MICROSTEPS      128
+    #define I_OVERCURRENT    2000
+    #define I_STALLCURRENT   1500
+    #define I_MAX_VOLTAGE     127
+    #define I_CHAIN_POS        -1
+    #define I_SLEW_RATE         1
+  #endif
+
+  #if AXIS_IS_L64XX(J)
+    #define J_MICROSTEPS      128
+    #define J_OVERCURRENT    2000
+    #define J_STALLCURRENT   1500
+    #define J_MAX_VOLTAGE     127
+    #define J_CHAIN_POS        -1
+    #define J_SLEW_RATE         1
+  #endif
+
+  #if AXIS_IS_L64XX(K)
+    #define K_MICROSTEPS      128
+    #define K_OVERCURRENT    2000
+    #define K_STALLCURRENT   1500
+    #define K_MAX_VOLTAGE     127
+    #define K_CHAIN_POS        -1
+    #define K_SLEW_RATE         1
+  #endif
+
+  #if AXIS_IS_L64XX(U)
+    #define U_MICROSTEPS      128
+    #define U_OVERCURRENT    2000
+    #define U_STALLCURRENT   1500
+    #define U_MAX_VOLTAGE     127
+    #define U_CHAIN_POS        -1
+    #define U_SLEW_RATE         1
+  #endif
+
+  #if AXIS_IS_L64XX(V)
+    #define V_MICROSTEPS      128
+    #define V_OVERCURRENT    2000
+    #define V_STALLCURRENT   1500
+    #define V_MAX_VOLTAGE     127
+    #define V_CHAIN_POS        -1
+    #define V_SLEW_RATE         1
+  #endif
+
+  #if AXIS_IS_L64XX(W)
+    #define W_MICROSTEPS      128
+    #define W_OVERCURRENT    2000
+    #define W_STALLCURRENT   1500
+    #define W_MAX_VOLTAGE     127
+    #define W_CHAIN_POS        -1
+    #define W_SLEW_RATE         1
+  #endif
+
+  #if AXIS_IS_L64XX(E0)
+    #define E0_MICROSTEPS              128
+    #define E0_OVERCURRENT            2000
+    #define E0_STALLCURRENT           1500
+    #define E0_MAX_VOLTAGE             127
+    #define E0_CHAIN_POS                -1
+    #define E0_SLEW_RATE                 1
+  #endif
+
+  #if AXIS_IS_L64XX(E1)
+    #define E1_MICROSTEPS    E0_MICROSTEPS
+    #define E1_OVERCURRENT            2000
+    #define E1_STALLCURRENT           1500
+    #define E1_MAX_VOLTAGE             127
+    #define E1_CHAIN_POS                -1
+    #define E1_SLEW_RATE                 1
+  #endif
+
+  #if AXIS_IS_L64XX(E2)
+    #define E2_MICROSTEPS    E0_MICROSTEPS
+    #define E2_OVERCURRENT            2000
+    #define E2_STALLCURRENT           1500
+    #define E2_MAX_VOLTAGE             127
+    #define E2_CHAIN_POS                -1
+    #define E2_SLEW_RATE                 1
+  #endif
+
+  #if AXIS_IS_L64XX(E3)
+    #define E3_MICROSTEPS    E0_MICROSTEPS
+    #define E3_OVERCURRENT            2000
+    #define E3_STALLCURRENT           1500
+    #define E3_MAX_VOLTAGE             127
+    #define E3_CHAIN_POS                -1
+    #define E3_SLEW_RATE                 1
+  #endif
+
+  #if AXIS_IS_L64XX(E4)
+    #define E4_MICROSTEPS    E0_MICROSTEPS
+    #define E4_OVERCURRENT            2000
+    #define E4_STALLCURRENT           1500
+    #define E4_MAX_VOLTAGE             127
+    #define E4_CHAIN_POS                -1
+    #define E4_SLEW_RATE                 1
+  #endif
+
+  #if AXIS_IS_L64XX(E5)
+    #define E5_MICROSTEPS    E0_MICROSTEPS
+    #define E5_OVERCURRENT            2000
+    #define E5_STALLCURRENT           1500
+    #define E5_MAX_VOLTAGE             127
+    #define E5_CHAIN_POS                -1
+    #define E5_SLEW_RATE                 1
+  #endif
+
+  #if AXIS_IS_L64XX(E6)
+    #define E6_MICROSTEPS    E0_MICROSTEPS
+    #define E6_OVERCURRENT            2000
+    #define E6_STALLCURRENT           1500
+    #define E6_MAX_VOLTAGE             127
+    #define E6_CHAIN_POS                -1
+    #define E6_SLEW_RATE                 1
+  #endif
+
+  #if AXIS_IS_L64XX(E7)
+    #define E7_MICROSTEPS    E0_MICROSTEPS
+    #define E7_OVERCURRENT            2000
+    #define E7_STALLCURRENT           1500
+    #define E7_MAX_VOLTAGE             127
+    #define E7_CHAIN_POS                -1
+    #define E7_SLEW_RATE                 1
+  #endif
+
+  /**
+   * Monitor L6470 drivers for error conditions like over temperature and over current.
+   * In the case of over temperature Marlin can decrease the drive until the error condition clears.
+   * Other detected conditions can be used to stop the current print.
+   * Relevant G-codes:
+   * M906 - I1/2/3/4/5  Set or get motor drive level using axis codes X, Y, Z, E. Report values if no axis codes given.
+   *         I not present or I0 or I1 - X, Y, Z or E0
+   *         I2 - X2, Y2, Z2 or E1
+   *         I3 - Z3 or E3
+   *         I4 - Z4 or E4
+   *         I5 - E5
+   * M916 - Increase drive level until get thermal warning
+   * M917 - Find minimum current thresholds
+   * M918 - Increase speed until max or error
+   * M122 S0/1 - Report driver parameters
+   */
+  //#define MONITOR_L6470_DRIVER_STATUS
+
+  #if ENABLED(MONITOR_L6470_DRIVER_STATUS)
+    #define KVAL_HOLD_STEP_DOWN     1
+    //#define L6470_STOP_ON_ERROR
+  #endif
+
+#endif // HAS_L64XX
 
 // @section i2cbus
 
@@ -3348,9 +3595,6 @@
   #if ENABLED(SPINDLE_LASER_USE_PWM)
     #define SPINDLE_LASER_PWM_INVERT    false  // Set to "true" if the speed/power goes up when you want it to go slower
     #define SPINDLE_LASER_FREQUENCY     2500   // (Hz) Spindle/laser frequency (only on supported HALs: AVR, ESP32, and LPC)
-                                               // ESP32: If SPINDLE_LASER_PWM_PIN is onboard then <=78125Hz. For I2S expander
-                                               //  the frequency determines the PWM resolution. 2500Hz = 0-100, 977Hz = 0-255, ...
-                                               //  (250000 / SPINDLE_LASER_FREQUENCY) = max value.
   #endif
 
   //#define AIR_EVACUATION                     // Cutter Vacuum / Laser Blower motor control with G-codes M10-M11
@@ -3424,11 +3668,8 @@
     #endif
 
     // Define the minimum and maximum test pulse time values for a laser test fire function
-    #define LASER_TEST_PULSE_MIN           1   // (ms) Used with Laser Control Menu
-    #define LASER_TEST_PULSE_MAX         999   // (ms) Caution: Menu may not show more than 3 characters
-
-    #define SPINDLE_LASER_POWERUP_DELAY   50   // (ms) Delay to allow the spindle/laser to come up to speed/power
-    #define SPINDLE_LASER_POWERDOWN_DELAY 50   // (ms) Delay to allow the spindle to stop
+    #define LASER_TEST_PULSE_MIN           1   // Used with Laser Control Menu
+    #define LASER_TEST_PULSE_MAX         999   // Caution: Menu may not show more than 3 characters
 
    /**
     * Laser Safety Timeout
@@ -3441,38 +3682,79 @@
     #define LASER_SAFETY_TIMEOUT_MS     1000   // (ms)
 
     /**
-     * Any M3 or G1/2/3/5 command with the 'I' parameter enables continuous inline power mode.
+     * Enable inline laser power to be handled in the planner / stepper routines.
+     * Inline power is specified by the I (inline) flag in an M3 command (e.g., M3 S20 I)
+     * or by the 'S' parameter in G0/G1/G2/G3 moves (see LASER_MOVE_POWER).
      *
-     * e.g., 'M3 I' enables continuous inline power which is processed by the planner.
-     * Power is stored in move blocks and applied when blocks are processed by the Stepper ISR.
-     *
-     * 'M4 I' sets dynamic mode which uses the current feedrate to calculate a laser power OCR value.
-     *
-     * Any move in dynamic mode will use the current feedrate to calculate the laser power.
-     * Feed rates are set by the F parameter of a move command e.g. G1 X0 Y10 F6000
-     * Laser power would be calculated by bit shifting off 8 LSB's. In binary this is div 256.
-     * The calculation gives us ocr values from 0 to 255, values over F65535 will be set as 255 .
-     * More refined power control such as compesation for accell/decell will be addressed in future releases.
-     *
-     * M5 I clears inline mode and set power to 0, M5 sets the power output to 0 but leaves inline mode on.
+     * This allows the laser to keep in perfect sync with the planner and removes
+     * the powerup/down delay since lasers require negligible time.
      */
+    //#define LASER_POWER_INLINE
 
-    /**
-     * Enable M3 commands for laser mode inline power planner syncing.
-     * This feature enables any M3 S-value to be injected into the block buffers while in
-     * CUTTER_MODE_CONTINUOUS. The option allows M3 laser power to be commited without waiting
-     * for a planner syncronization
-     */
-    //#define LASER_POWER_SYNC
+    #if ENABLED(LASER_POWER_INLINE)
+      /**
+       * Scale the laser's power in proportion to the movement rate.
+       *
+       * - Sets the entry power proportional to the entry speed over the nominal speed.
+       * - Ramps the power up every N steps to approximate the speed trapezoid.
+       * - Due to the limited power resolution this is only approximate.
+       */
+      #define LASER_POWER_INLINE_TRAPEZOID
 
-    /**
-     * Scale the laser's power in proportion to the movement rate.
-     *
-     * - Sets the entry power proportional to the entry speed over the nominal speed.
-     * - Ramps the power up every N steps to approximate the speed trapezoid.
-     * - Due to the limited power resolution this is only approximate.
-     */
-    //#define LASER_POWER_TRAP
+      /**
+       * Continuously calculate the current power (nominal_power * current_rate / nominal_rate).
+       * Required for accurate power with non-trapezoidal acceleration (e.g., S_CURVE_ACCELERATION).
+       * This is a costly calculation so this option is discouraged on 8-bit AVR boards.
+       *
+       * LASER_POWER_INLINE_TRAPEZOID_CONT_PER defines how many step cycles there are between power updates. If your
+       * board isn't able to generate steps fast enough (and you are using LASER_POWER_INLINE_TRAPEZOID_CONT), increase this.
+       * Note that when this is zero it means it occurs every cycle; 1 means a delay wait one cycle then run, etc.
+       */
+      //#define LASER_POWER_INLINE_TRAPEZOID_CONT
+
+      /**
+       * Stepper iterations between power updates. Increase this value if the board
+       * can't keep up with the processing demands of LASER_POWER_INLINE_TRAPEZOID_CONT.
+       * Disable (or set to 0) to recalculate power on every stepper iteration.
+       */
+      //#define LASER_POWER_INLINE_TRAPEZOID_CONT_PER 10
+
+      /**
+       * Include laser power in G0/G1/G2/G3/G5 commands with the 'S' parameter
+       */
+      //#define LASER_MOVE_POWER
+
+      #if ENABLED(LASER_MOVE_POWER)
+        // Turn off the laser on G0 moves with no power parameter.
+        // If a power parameter is provided, use that instead.
+        //#define LASER_MOVE_G0_OFF
+
+        // Turn off the laser on G28 homing.
+        //#define LASER_MOVE_G28_OFF
+      #endif
+
+      /**
+       * Inline flag inverted
+       *
+       * WARNING: M5 will NOT turn off the laser unless another move
+       *          is done (so G-code files must end with 'M5 I').
+       */
+      //#define LASER_POWER_INLINE_INVERT
+
+      /**
+       * Continuously apply inline power. ('M3 S3' == 'G1 S3' == 'M3 S3 I')
+       *
+       * The laser might do some weird things, so only enable this
+       * feature if you understand the implications.
+       */
+      //#define LASER_POWER_INLINE_CONTINUOUS
+
+    #else
+
+      #define SPINDLE_LASER_POWERUP_DELAY     50 // (ms) Delay to allow the spindle/laser to come up to speed/power
+      #define SPINDLE_LASER_POWERDOWN_DELAY   50 // (ms) Delay to allow the spindle to stop
+
+    #endif
 
     //
     // Laser I2C Ammeter (High precision INA226 low/high side module)
@@ -3839,10 +4121,10 @@
  * Host Prompt Support enables Marlin to use the host for user prompts so
  * filament runout and other processes can be managed from the host side.
  */
-//#define HOST_ACTION_COMMANDS
+#define HOST_ACTION_COMMANDS
 #if ENABLED(HOST_ACTION_COMMANDS)
   //#define HOST_PAUSE_M76                // Tell the host to pause in response to M76
-  //#define HOST_PROMPT_SUPPORT           // Initiate host prompts to get user feedback
+  #define HOST_PROMPT_SUPPORT             // Initiate host prompts to get user feedback
   #if ENABLED(HOST_PROMPT_SUPPORT)
     //#define HOST_STATUS_NOTIFICATIONS   // Send some status messages to the host as notifications
   #endif
@@ -4007,8 +4289,7 @@
   #define MAX7219_NUMBER_UNITS 1   // Number of Max7219 units in chain.
   #define MAX7219_ROTATE       0   // Rotate the display clockwise (in multiples of +/- 90°)
                                    // connector at:  right=0   bottom=-90  top=90  left=180
-  //#define MAX7219_REVERSE_ORDER  // The order of the LED matrix units may be reversed
-  //#define MAX7219_REVERSE_EACH   // The LEDs in each matrix unit row may be reversed
+  //#define MAX7219_REVERSE_ORDER  // The individual LED matrix units may be in reversed order
   //#define MAX7219_SIDE_BY_SIDE   // Big chip+matrix boards can be chained side-by-side
 
   /**
@@ -4016,15 +4297,12 @@
    * If you add more debug displays, be careful to avoid conflicts!
    */
   #define MAX7219_DEBUG_PRINTER_ALIVE    // Blink corner LED of 8x8 matrix to show that the firmware is functioning
-  #define MAX7219_DEBUG_PLANNER_HEAD  2  // Show the planner queue head position on this and the next LED matrix row
-  #define MAX7219_DEBUG_PLANNER_TAIL  4  // Show the planner queue tail position on this and the next LED matrix row
+  #define MAX7219_DEBUG_PLANNER_HEAD  3  // Show the planner queue head position on this and the next LED matrix row
+  #define MAX7219_DEBUG_PLANNER_TAIL  5  // Show the planner queue tail position on this and the next LED matrix row
 
   #define MAX7219_DEBUG_PLANNER_QUEUE 0  // Show the current planner queue depth on this and the next LED matrix row
                                          // If you experience stuttering, reboots, etc. this option can reveal how
                                          // tweaks made to the configuration are affecting the printer in real-time.
-  #define MAX7219_DEBUG_PROFILE       6  // Display the fraction of CPU time spent in profiled code on this LED matrix
-                                         // row. By default idle() is profiled so this shows how "idle" the processor is.
-                                         // See class CodeProfiler.
 #endif
 
 /**
